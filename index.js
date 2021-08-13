@@ -4,7 +4,6 @@ const client = new Client({
    intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.DIRECT_MESSAGES],
    partials: ['MESSAGE', 'CHANNEL', 'USER'],
 });
-const firebase_module = require('./firebase_function/firebase_database')
 const { token, serverid, game_channel_id, prefix } = require('./config.json')
 const cooldown = new Collection();
 const { convertMS } = require("discordutility");
