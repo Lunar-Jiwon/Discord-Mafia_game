@@ -236,7 +236,8 @@ client.on('messageCreate', async (message) => {
                      return b.Vote - a.Vote
                   })
                   if (Vote_Player[0].Vote == Vote_Player[1].Vote) {
-                     return await Channel.send({ embeds: [EMBED.setTitle(Messages.GAME.VOTE_OVERLAP.TITLE).setDescription(Messages.GAME.VOTE_OVERLAP.DESCRIPTION).setColor(RED)] })
+                     await Channel.send({ embeds: [EMBED.setTitle(Messages.GAME.VOTE_OVERLAP.TITLE).setDescription(Messages.GAME.VOTE_OVERLAP.DESCRIPTION).setColor(RED)] })
+                     return Night_Select();
                   }
                   for (var j = 0; j < Player_Roles.length; j++) {
                      if (Player_Roles[j].Uid == Vote_Player[0].Uid) {
