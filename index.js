@@ -119,7 +119,6 @@ client.on('messageCreate', async (message) => {
                  
                   for (var i = 0; i < Joined_Players.length; i++) {
                      if (Joined_Players[i] == user) {
-                        console.log(`플레이어 : ${Joined_Players[i]}, 지목한 플레이어 ${Player_Roles[j].Uid}`)
                         for (var a = 0; a < Player_Roles.length; a++) {
                            
                            if (Player_Roles[a].Uid == user) {
@@ -127,7 +126,6 @@ client.on('messageCreate', async (message) => {
                                  case "경찰":
                                     Police_Select = user;
                                     Select_DONE++;
-                                    console.log(Player_Roles[a].Role)
                                     Vote_Done_Players.push(message.author.id);
                                     for (var y = 0; y < Player_Roles.length; y++) {
                                        if (Police_Select == Player_Roles[y].Uid) {
@@ -171,14 +169,11 @@ client.on('messageCreate', async (message) => {
                                  for (var g = 0; g < Player_Roles.length; g++) {
                                     
                                     for (var b = 0; b < Mafia_Select.length; b++) {
-                                       console.log("마피아")
                                        if (Mafia_Select[b] == Player_Roles[g].Uid) {
                                           if (Doctor_Select == Mafia_Select[b]) {
-                                             console.log("의사 살림")
                                              await Channel.send({ embeds: [EMBED.setTitle(Messages.GAME.ALIVEUSER.TITLE).setDescription(Messages.GAME.ALIVEUSER.DESCRIPTION0 + `<@${Doctor_Select}>` + Messages.GAME.ALIVEUSER.DESCRIPTION1).setColor(GREEN)] })
                                              
                                           } else {
-                                             console.log("마피아 줌ㄱ임")
                                              IsDie = true;
                                              if (Player_Roles[g].Role == "시민") Citizen_Count--;
                                              Lock_Channel(false, true, Player_Roles[g].Uid);
@@ -224,7 +219,6 @@ client.on('messageCreate', async (message) => {
                for (var a = 0; a < Vote_Done_Players.length; a++) {
                   if (Vote_Done_Players[a] == message.author.id) return message.reply({ embeds: [EMBED.setTitle(Messages.GAME.ALREADY_VOTE.TITLE).setDescription(Messages.GAME.ALREADY_VOTE.DESCRIPTION).setColor(RED)] })
                }
-               console.log(`플레이어 : ${message.author.id}, 지목한 플레이어 ${message.mentions.members.first().id}`)
 
                for (var a = 0; a < Vote_Player.length; a++) {
                   if (Vote_Player[a].Uid == message.mentions.members.first().id) {
@@ -560,12 +554,10 @@ async function overlap(i) {
          ia++
       }
    } while (ia < i)
-   console.log(Suser)
 }
 
 // 배열에 각 직업과 유저 아이디를 저장하는 함수
 async function push_role(Uid, Role) {
-   console.log(`UID : ${Uid}, Role : ${Role}`)
    var EMBED = new MessageEmbed();
    Player_Roles.push({ Uid: Uid, Role: Role })
    const user = await client.users.fetch(Uid);
