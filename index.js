@@ -4,6 +4,7 @@ const client = new Client({
    intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.DIRECT_MESSAGES],
    partials: ['MESSAGE', 'CHANNEL', 'USER'],
 });
+const firebase_module = require('./firebase_function/firebase_database')
 const { token, serverid, game_channel_id, prefix } = require('./config.json')
 const cooldown = new Collection();
 const { convertMS } = require("discordutility");
@@ -86,7 +87,7 @@ const Messages = {
 client.once('ready', async () => {
    console.log('Ready!');
    client.user.setActivity('!마피아', { type: 'WATCHING' });
-   Channel = (await (await client.guilds.cache.get(serverid)).channels.cache.get(game_channel_id))
+   Channel = await client.guilds.cache.get(serverid).channels.cache.get(game_channel_id)
 });
 client.on('messageCreate', async (message) => {
    if (IsGamePlaying) {
@@ -150,19 +151,18 @@ client.on('messageCreate', async (message) => {
                                     Vote_Done_Players.push(message.author.id);
                                     break;
                                  case "마피아":
-                                    var h = 0;
-                                    do {
-                                       for (var y = 0; y < Mafia_Select.length; y++) {
-                                          if (Mafia_Select[h] == Mafia_Select[y]) {
-                                             message.reply({ embeds: [EMBED.setTitle(Messages.GAME.SNRK_GOTDJ.TITLE).setDescription(Messages.GAME.SNRK_GOTDJ.DESCRIPTION).setColor(RED)] })
-                                          }
-                                       }
-                                    } while (h < Mafia_Select.length)
-                                    Mafia_Select.push(user);
+                                    console.log(Mafia_Select.every((e) => user !== e));
+                                    if (Mafia_Select.every((e) => user !== e)) {
+                                       Mafia_Select.push(user);
                                     Select_DONE++;
                                     Vote_Done_Players.push(message.author.id);
+                                    }else{
+                                       return message.reply({ embeds: [EMBED.setTitle(Messages.GAME.SNRK_GOTDJ.TITLE).setDescription(Messages.GAME.SNRK_GOTDJ.DESCRIPTION).setColor(RED)] })
+                                    }
+                                    
                                     break;
                               }
+
                               if (Select_DONE == Player_Roles.length - Citizen_Count) {
                                  if (Player_Roles[j].Role != "경찰") message.reply({ embeds: [EMBED.setTitle(Messages.GAME.GAME_DONE_PLAYER_SELECT.TITLE).setDescription(`<@${user}>` + Messages.GAME.GAME_DONE_PLAYER_SELECT.DESCRIPTION).setColor(GREEN)] })
                                  for (var g = 0; g < Player_Roles.length; g++) {
@@ -170,15 +170,19 @@ client.on('messageCreate', async (message) => {
                                     for (var b = 0; b < Mafia_Select.length; b++) {
                                        if (Mafia_Select[b] == Player_Roles[g].Uid) {
                                           if (Doctor_Select == Mafia_Select[b]) {
+                                             Mafia_Select.splice(b, 1)
                                              await Channel.send({ embeds: [EMBED.setTitle(Messages.GAME.ALIVEUSER.TITLE).setDescription(Messages.GAME.ALIVEUSER.DESCRIPTION0 + `<@${Doctor_Select}>` + Messages.GAME.ALIVEUSER.DESCRIPTION1).setColor(GREEN)] })
                                              
-                                          } else {
-                                             IsDie = true;
-                                             if (Player_Roles[g].Role == "시민") Citizen_Count--;
-                                             Lock_Channel(false, true, Player_Roles[g].Uid);
-                                             await Channel.send({ embeds: [EMBED.setTitle(Messages.GAME.DIE_FROM_MAFIA.TITLE).setDescription(`<@${Mafia_Select}>` + Messages.GAME.DIE_FROM_MAFIA.DESCRIPTION).setColor(RED)] })
-                                             Player_Roles.splice(g, 1)
                                           }
+                                       }
+                                    }
+                                    for (var b = 0; b < Mafia_Select.length; b++) {
+                                       if (Mafia_Select[b] == Player_Roles[g].Uid) {
+                                          IsDie = true;
+                                          if (Player_Roles[g].Role == "시민") Citizen_Count--;
+                                          Lock_Channel(false, true, Player_Roles[g].Uid);
+                                          await Channel.send({ embeds: [EMBED.setTitle(Messages.GAME.DIE_FROM_MAFIA.TITLE).setDescription(`<@${Mafia_Select[b]}>` + Messages.GAME.DIE_FROM_MAFIA.DESCRIPTION).setColor(RED)] })
+                                          Player_Roles.splice(g, 1)
                                        }
                                     }
                                  }
