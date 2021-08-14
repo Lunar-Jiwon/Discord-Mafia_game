@@ -436,8 +436,8 @@ async function Game_Start() {
             await push_role(Joined_Players[Suser[0]], "경찰")
             await push_role(Joined_Players[Suser[1]], "의사")
             await push_role(Joined_Players[Suser[2]], "마피아")
-            await push_role(Joined_Players[Suser[2]], "마피아")
-            await push_role(Joined_Players[Suser[2]], "마피아")
+            await push_role(Joined_Players[Suser[3]], "마피아")
+            await push_role(Joined_Players[Suser[4]], "마피아")
 
             Mafia_Count = 3;
          } else {
